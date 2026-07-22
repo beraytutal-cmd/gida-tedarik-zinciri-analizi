@@ -73,26 +73,30 @@ Bu projede her iki risk de otomatik olarak hesaplanmakta ve görselleştirilmekt
 - **Stoksuz Kalma:** `Demand Forecast > Inventory Level`
 - **Aşırı Stok/İsraf:** `Inventory Level > Units Sold * 2`
 
-### 4. Genel Talep Tahmini (Tüm Ürünler)
+### 4. Genel Talep Tahmini (Groceries Kategori Düzeyi)
 - Facebook Prophet ile 30 gün ileriye tahmin
 - Train: İlk 671 gün / Test: Son 30 gün
-- **MAE:** 465.9 birim
+- **MAE:** 465.9 birim | **MAPE:** %19.4 | **RMSE:** 611.2 birim
 
 ### 5. Ürün Bazında Analiz (P0016)
 - En çok satan ürün: **P0016** (110.560 birim)
 - Günlük ortalama satış: 213.8 birim
 - Tahmini günlük talep: 236 birim
-- 30 günde 9 gün israf riski
+- Günlük gerçek stok seviyeleri (`Inventory Level`) baz alınarak dinamik risk takibi.
 
-### 6. Model Karşılaştırması
+### 6. Model Karşılaştırması & Değerlendirme Metrikleri
 
-| Model | MAE (birim) | Durum |
-|-------|-------------|-------|
-| Baseline (sabit ortalama) | 109.2 | **En İyi** |
-| Prophet (varsayılan) | 117.3 | İkinci |
-| Prophet (geliştirilmiş) | 130.5 | En Kötü |
+| Model / Kapsam | MAE (birim) | MAPE (%) | RMSE (birim) | Durum |
+|----------------|-------------|----------|--------------|-------|
+| **Kategori Prophet (Groceries)** | 465.9 | **%19.4** | 611.2 | **Kategori En İyisi** |
+| Kategori Baseline (Groceries) | 477.0 | %21.0 | 625.6 | İkinci |
+| **P0016 Baseline (sabit ortalama)** | **109.2** | %95.2 | **160.2** | **Ürün En İyisi** |
+| P0016 Prophet (varsayılan) | 117.3 | %107.4 | 162.0 | İkinci |
+| P0016 Prophet (geliştirilmiş) | 130.5 | %112.1 | 168.4 | Üçüncü |
 
-> Bu bulgu, model seçiminin **ürün bazında** yapılması gerektiğini gösteriyor.
+> **Metodoloji Notu:** 
+> 1. **Model Seçimi:** Kategori genelinde Prophet %19.4 MAPE ile en iyi sonucu verirken, tekil ürün seviyesinde (P0016) baseline ortalama model en düşük hatayı verdi. Bu durum model seçiminin **kapsama göre (kategori vs ürün)** özelleştirilmesi gerektiğini kanıtlamaktadır.
+> 2. **Dinamik Risk Analizi:** Risk tespiti yapılırken tekil sabit ortalama yerine, test verisetindeki **günlük gerçek stok seviyeleri (`Inventory Level`)** referans alınmıştır.
 
 ### 7. Risk Dashboard
 4 panelden oluşan görsel özet:
